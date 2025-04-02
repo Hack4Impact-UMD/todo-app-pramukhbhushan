@@ -54,7 +54,21 @@ const TaskTable = ({ tasks, toggleCompletion, deleteTask }) => {
             the task's id as a parameter.
         */}
         {tasks.map((task) => (
-          <p>REPLACE ME WITH YOUR ANSWER</p>
+          <tr key={task.id}>
+          <td>{task.title}</td>
+          <td>{task.description}</td>
+          <td>{task.dueDate}</td>
+          <td>
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => toggleCompletion(task.id)}
+            />
+          </td>
+          <td>
+            <button onClick={() => deleteTask(task.id)}>Delete</button>
+          </td>
+        </tr>
         ))}
       </TableBody>
     </Table>

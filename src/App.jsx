@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import TaskTable from "./components/TaskTable";
+import { ThemeContext } from "@emotion/react";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -44,6 +45,21 @@ function App() {
   */
   const addTask = () => {
     // START EDITING
+    if(title){
+      const newTask = {
+        id:uuidv4(),
+        title: title,
+        description: description,
+        completed: false,
+        dueDate: dueDate,
+      };
+    
+    setTasks([...tasks, newTask]);
+    //rest state variables
+    setTitle('');
+    setDescription('');
+    setDueDate('');
+    }
     // END EDITING
   };
 
@@ -60,6 +76,9 @@ function App() {
     HINT HINT NUDGE NUDGE: I'm getting some Week 4 HW flashbacks...are you?
   */
   const toggleCompletion = (id) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
     // START EDITING
     // END EDITING
   };
@@ -96,6 +115,9 @@ function App() {
     component to the result of calling calculateProgress.
   */
   const calculateProgress = () => {
+    if (tasks.length ===0) return 0;
+    const completedTaskCount =  tasks.filter(task => task.completed).length;
+    return (completedTaskCount / tasks.length) * 100;
     // START EDITING
     // END EDITING
   };
@@ -116,16 +138,23 @@ function App() {
         <TextField
           required
           label="Title"
+          value  = {title}
+          onChange  = {(e)=>setTitle(e.target.value)}
         />
         <TextField
           label="Description"
+          value = {description}
+          onChange  = {(e)=>setDescription(e.target.value)}
         />
         <TextField
           label="Due Date"
           type="date"
           InputLabelProps={{ shrink: true }}
+          value={dueDate}
+          onChange={(e) => setDescription(e.target.value)}
         />
-        <Button variant="contained">
+        <Button variant="contained"
+        onClick = {addTask}>
           Add Task
         </Button>
       </div>
@@ -140,6 +169,7 @@ function App() {
       />
       <LinearProgress
         variant="determinate"
+        value={calculateProgress()} // Add this line
         sx={{ width: "100%", height: 10, borderRadius: 5, marginBottom: 2 }}
       />
       <TaskTable 
